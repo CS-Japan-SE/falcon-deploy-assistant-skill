@@ -23,10 +23,17 @@ For targets with multiple integrations, ask the user which integration they want
 
 ### AWS integrations
 
-- **SSM Distributor** — Deploy to EC2 instances via AWS Systems Manager (Terraform-based)
+For EC2 deployments, always ask whether the user needs to cover **existing instances**, **new instances (Auto Scaling / AMI)**, or **both**, then recommend accordingly:
+
+- **Existing EC2 instances** → Recommend **SSM Distributor**
+- **New EC2 instances / Auto Scaling** → Recommend **SSM Distributor with State Manager Association** (automatically applies to newly launched instances; no need for EC2 Image Builder in most cases)
+- **Both** → Recommend **SSM Distributor + State Manager Association** as a single solution covering both scenarios
+- **EC2 Image Builder** — Only recommend when the user explicitly needs the sensor baked into an AMI (e.g., network-restricted environments where SSM is unavailable)
+
+Other AWS integrations:
+
 - **ECS Fargate** — Deploy container sensor with ECS Fargate tasks (Terraform-based)
 - **EKS** — Automated deployment across AWS Organization EKS clusters
-- **EC2 Image Builder** — Bake sensor into AMIs/golden images
 - **CloudFormation (ECS)** — Deploy to ECS via CloudFormation
 - **Beanstalk** — AWS Elastic Beanstalk
 - **WorkSpaces** — Amazon WorkSpaces
@@ -126,8 +133,9 @@ Based on the target and integration, fetch the relevant README using WebFetch fr
 Using the fetched documentation:
 
 1. Summarize the prerequisites (required permissions, credentials, tools)
-2. Present the deployment steps clearly and concisely
-3. Highlight any important notes or caveats from the documentation
-4. Offer to fetch additional detail pages if the user needs deeper information
+2. **Always clarify coverage scope**: unless the user has already specified, ask whether they need to cover existing instances, new instances, or both — and tailor the guidance accordingly
+3. Present the deployment steps clearly and concisely
+4. Highlight any important notes or caveats from the documentation
+5. Offer to fetch additional detail pages if the user needs deeper information
 
 Always cite the source URL at the end of your response so the user can refer to the original documentation.
